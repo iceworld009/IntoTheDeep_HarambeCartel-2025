@@ -1,0 +1,32 @@
+package org.firstinspires.ftc.teamcode.TeleOp.Tuning;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
+
+@TeleOp
+@Config
+public class FindMotors extends OpMode {
+    
+    public Servo servo = null;
+    public DcMotorEx Motor1 , Motor2;
+    public static String servoName = "";
+    public static double Position= 0 , power1 = 0 , power2 = 0;
+    
+    @Override
+    public void init(){
+        this.servo = hardwareMap.get(Servo.class , "PV");
+        this.Motor1 = hardwareMap.get(DcMotorEx.class,"FR");
+        this.Motor2 = hardwareMap.get(DcMotorEx.class,"RS");
+    }
+    
+    @Override
+    public void loop() {
+        servo.setPosition(Position);
+        Motor1.setPower(power1);
+        Motor2.setPower(power2);
+
+    }
+}
