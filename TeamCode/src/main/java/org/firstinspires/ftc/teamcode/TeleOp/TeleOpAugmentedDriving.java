@@ -5,11 +5,13 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.HardwareClass;
+import org.firstinspires.ftc.teamcode.Threads.ColorSenzorThr;
 import org.firstinspires.ftc.teamcode.Threads.Holonomic;
 import org.firstinspires.ftc.teamcode.Threads.Servos;
 import org.firstinspires.ftc.teamcode.Threads.Slides;
@@ -49,6 +51,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
     //Holonomic chassy = null;
     Slides slides = null;
     Servos servos = null;
+    ColorSenzorThr colorSensor = null;
      int drop = 0;
     HardwareClass hardwareClass = null;
     Holonomic holonomic = null;
@@ -86,6 +89,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
         servos = Servos.getInstance(hardwareMap, telemetry);
         hardwareClass = HardwareClass.getInstance(hardwareMap);
         holonomic = Holonomic.getInstance(hardwareMap, gamepad1);
+        colorSensor = ColorSenzorThr.getInstance(hardwareMap,telemetry);
 
         //Setup Individual Motors
         hardwareClass.LS.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -100,7 +104,6 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
             slides.setup();
         }
 
-
         if (!holonomic.getStatus()) {
             holonomic.start();
         }
@@ -112,7 +115,6 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
 
             switch (Style) {
                 case "Drive": {
-
                     if (this.gamepad1.right_bumper) {
                             servos.ExtendoMax();
                             servos.SClawOut();
@@ -133,7 +135,6 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         servos.BrushOFF();
                     }
                     if (this.gamepad1.a) {
-
                         servos.SClawIn();
                         sleep(200);
                         servos.BrushOFF();
@@ -142,9 +143,20 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         Style = "Outtake";
                         servos.OutTakeTrans();
                         slides.nulpoz();
-
                     }
 
+                    /*
+                    if (colorSensor.getColor() == 1){
+                        servos.SClawIn();
+                        sleep(200);
+                        servos.BrushOFF();
+                        servos.IntakeIn();
+                        servos.ExtendoMin();
+                        Style = "Outtake";
+                        servos.OutTakeTrans();
+                        slides.nulpoz();
+                    }
+                     */
 
                     if (this.gamepad1.x) {
                         servos.BrushOFF();
@@ -152,7 +164,6 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         sleep(30);
                         servos.ExtendoMin();
                         Style = "Drive";
-
                     }
 
                     break;
@@ -162,7 +173,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                 case "Outtake": {
                     if (this.gamepad1.y) {
                         servos.ExtendoShort();
-                        sleep(150);
+                        //sleep(150);
                         servos.SClawOut();
                         servos.ExtendoMin();
                         Style = "Drive";

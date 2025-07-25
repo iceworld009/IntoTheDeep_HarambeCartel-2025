@@ -43,13 +43,53 @@ public class Servos {
         if(thread == null || !thread.isAlive()){
             thread = new Thread(() ->{
                 while(running){
-                    OuttakeRotate.setPosition(ROP);
-                    IntakeRotate.setPosition(RIP);
-                    ClawOut.setPosition(COP);
+
                 }
             });
         }
         thread.start();
+    }
+
+    /** AUTO */
+
+    public void outtakePrepSample(){
+        OutClawTake();
+        OutTakeBasket();
+    }
+
+    public void outtakePlaceSample(){
+        OutClawOpen();
+    }
+
+    public void outtakeReturn(){
+        OutTakeTrans();
+        OutTakeRest();
+    }
+
+    public void intakeReady(){
+        SClawOut();
+        IntakePreTake();
+        BrushOFF();
+        ExtendoShort();
+    }
+
+    public void intakeSweep(){
+        SClawOut();
+        IntakeOut();
+        BrushOn();
+        ExtendoMax();
+    }
+
+    public void intakeIn(){
+        SClawIn();
+        BrushOFF();
+        IntakeIn();
+        ExtendoMin();
+    }
+
+    public void transfer(){
+        OutClawTake();
+        SClawOut();
     }
 
     /** TeleOP */
@@ -143,11 +183,6 @@ public class Servos {
     {
         OuttakeRotate.setPosition(HardwareClass.Outtaketakepoz);
     }
-
-
-
-
-
 
     public void wait(int sec){
         try {

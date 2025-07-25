@@ -49,14 +49,14 @@ public class HardwareClass {
     /**  EXTENDO PID VALUES  */
 
     //Servo
-    public static double SClawMax = 0.73, SClawMin = 0.49   ;      //gheara
+    public static double SClawMax = 0.73, SClawMin = 0.49   ;//gheara
 
     public Servo ClawOut , OuttakeRotate, MobiDick , Cam, SClaw, SExtendo, IntakeRotate;
 
     public CRServo Brush;
 
-
-
+    //Color senzor
+    public ColorRangeSensor Yoda = null;
 
     private static HardwareClass hardwareClass = null;
 
@@ -78,8 +78,9 @@ public class HardwareClass {
         this.MobiDick = hardwareMap.get(Servo.class, "MD");
         this.SExtendo = hardwareMap.get(Servo.class, "IP");
         this.IntakeRotate = hardwareMap.get(Servo.class, "RI");
-        // this.IntakeSensor = hardwareMap.get(ColorRangeSensor.class, "IS");
 
+        this.Yoda = hardwareMap.get(ColorRangeSensor.class,"___TEST___");
+        // this.IntakeSensor = hardwareMap.get(ColorRangeSensor.class, "IS");
     }
 
     public static synchronized HardwareClass getInstance(HardwareMap hardwareMap){

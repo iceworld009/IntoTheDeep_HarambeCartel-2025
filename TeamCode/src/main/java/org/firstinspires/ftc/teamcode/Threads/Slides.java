@@ -57,8 +57,7 @@ public class Slides {
 
     // IDK cuaie ;0
     public void nulpoz() {
-        goToPosition(50);
-
+        goToPosition(10);
     /*
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢀⡠⠤⠒⠒⠲⠤⣤⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
             ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠟⠁⠀⠀⠀⠀⠀⠀⠁⠙⡮⣂⠀⠀⠀⠀⠀⠀⠀⠀
@@ -77,6 +76,7 @@ public class Slides {
 
      */
     }
+
     public void setup(){
         running = true;
         //LS.setDirection(DcMotor.Direction.FORWARD);
