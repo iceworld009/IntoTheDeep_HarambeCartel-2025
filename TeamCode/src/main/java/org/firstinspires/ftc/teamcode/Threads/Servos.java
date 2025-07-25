@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Threads;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -9,7 +10,9 @@ import org.firstinspires.ftc.teamcode.HardwareClass;
 public class Servos {
 
     //Declarations
-    public Servo ClawIn , ClawOut , IntakeRotate, OuttakeRotate, Pivot, Specimen, SpecClaw;
+    public Servo ClawOut , OuttakeRotate, MobiDick , Cam, SClaw, SExtendo, IntakeRotate;
+
+    public CRServo Brush;
     public  Servo SpecArm;
     private HardwareClass hardwareClass;
 
@@ -25,13 +28,14 @@ public class Servos {
     int trans = 0;
 
     public Servos(HardwareClass hardwareClass, Telemetry telemetry , HardwareMap hardwareMap){
-        this.ClawIn = hardwareClass.ClawIn;
         this.ClawOut = hardwareClass.ClawOut;
         //this.Extendo = hardwareClass.Extendo;
         this.IntakeRotate = hardwareClass.IntakeRotate;
         this.OuttakeRotate = hardwareClass.OuttakeRotate;
-        this.Pivot = hardwareClass.Pivot;
         this.hardwareClass = hardwareClass;
+        this.SExtendo = hardwareClass.SExtendo;
+        this.SClaw = hardwareClass.SClaw;
+        this.Brush = hardwareClass.Brush;
     }
 
     public void start(){
@@ -39,12 +43,9 @@ public class Servos {
         if(thread == null || !thread.isAlive()){
             thread = new Thread(() ->{
                 while(running){
-                    Specimen.setPosition(SpecP);
                     OuttakeRotate.setPosition(ROP);
                     IntakeRotate.setPosition(RIP);
-                    ClawIn.setPosition(CIP);
                     ClawOut.setPosition(COP);
-                    Pivot.setPosition(PVP);
                 }
             });
         }
@@ -53,288 +54,97 @@ public class Servos {
 
     /** TeleOP */
 
-    public void intake(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_PREP);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
-        Pivot.setPosition(hardwareClass.PIVOT_MAX_RIGHT);
-    }
 
-    public void transfer_P(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN);
-        wait(20);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_ADJUST);
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-        wait(100);
-        Pivot.setPosition(hardwareClass.PIVOT_MAX_RIGHT);
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_UP);
-        wait(200);
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_PREP);
-        wait(200);
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_UP);
+    //Extendo
+    public void ExtendoMax()
+    {
+        SExtendo.setPosition(HardwareClass.ExtendoMaxPoz);
     }
-
-    public void camIn(){
-        hardwareClass.Cam.setPosition(hardwareClass.CAM_IN);
+    public void ExtendoMin()
+    {
+        SExtendo.setPosition(HardwareClass.ExtendoMinPoz);
     }
-
-    public void camOut(){
-        hardwareClass.Cam.setPosition(hardwareClass.CAM_OUT);
+    public void Extendorest()
+    {
+        SExtendo.setPosition(HardwareClass.ExtendoRestPoz);
     }
-
-    public void transfer(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN);
-        wait(80);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_CLOSED);
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-        wait(100);
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_UP);
-        //adjust();
-    }
-
-    public void transferShort(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN);
-        wait(80);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_CLOSED);
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN);
-        wait(100);
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_UP);
-        wait(100);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-        wait(100);
-        //adjust();
-    }
-
-    public void transferTO(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN - 0.02);
-        wait(20);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_CLOSED);
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-        wait(100);
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_UP);
-        //adjust();
-    }
-
-    public void outtakeDown(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-    }
-
-    public void outtakeVERYDown(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE_LOW);
-    }
-
-    public void transferSpec(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN);
-        wait(100);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_ADJUST);
-        wait(100);
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-        wait(100);
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_UP);
-        wait(100);
-        //adjust();
-    }
-
-    public void align(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN);
-        wait(40);
-        double pos = Pivot.getPosition();
-        Pivot.setPosition(pos + 0.2);
-        wait(50);
-        Pivot.setPosition(pos);
-        wait(70);
-    }
-
-    public void alignHigh(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN - 0.06);
-        wait(200);
-        double pos = Pivot.getPosition();
-        Pivot.setPosition(pos + 0.2);
-        wait(70);
-        Pivot.setPosition(pos);
-        wait(100);
-    }
-
-    public void outtake(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_SPEC);
-        wait(100);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
-        wait(100);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_PLACE - 0.05);
-    }
-
-    public void outtakeTransf(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_CLOSED);
-        wait(100);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
-        wait(100);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_PLACE);
-    }
-
-    public void outtakeS(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_CLOSED);
-        wait(100);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
-        wait(100);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_HIGH_VERT);
-    }
-
-    public void outtakeSpec(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_SPEC);
-        wait(170);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_SPEC);
-    }
-
-    public void see(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_SEE);
-    }
-
-    public void placeInBasket(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN);
-        wait(100);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_VERTICAL);
-    }
-
-    public void placeInBasket_S(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN - 0.09);
-        wait(100);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_VERTICAL);
-    }
-
-    public void intakeSpec(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_PREP);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
-        Pivot.setPosition(hardwareClass.PIVOT_MAX_RIGHT);
-    }
-
-    public void prepOuttake(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_CLOSED);
-        wait(200);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
-        wait(200);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_VERTICAL);
-    }
-
-    public void releaseSpecimen(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN);
-    }
-
-    public void rotatePivot(double target){
-        Pivot.setPosition(target);
-    }
-
-    public void closeSpecimen(){
-        Specimen.setPosition(hardwareClass.SPECIMEN_CLOSED);
-    }
-
-    public void openSpecimen(){
-        Specimen.setPosition(hardwareClass.SPECIMEN_OPEN);
+    public void ExtendoShort()
+    {
+        SExtendo.setPosition(HardwareClass.ExtendoShortPoz);
     }
 
 
-    public void pickUpSample(){
-        ClawIn.setPosition(hardwareClass.CLAW_IN_CLOSED);
-        wait(200);
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_PREP);
-        Pivot.setPosition(hardwareClass.PIVOT_MAX_LEFT);
+    //Brush
+    public void BrushOFF()
+    {
+        Brush.setPower(0);
+    }
+    public void BrushOn()
+    {
+        Brush.setPower(-1);
     }
 
-    public void specArmOpen(){
-        SpecClaw.setPosition(hardwareClass.SPEC_CLAW_OPEN);
-    }
-    public void specArmClose(){
-        SpecClaw.setPosition(hardwareClass.SPEC_CLAW_CLOSE);
-    }
+    // Intake rotate
 
-
-    public void specArmUpFar(){
-        SpecClaw.setPosition(hardwareClass.SPEC_CLAW_CLOSE);
+    public void IntakePreTake()
+    {
+        IntakeRotate.setPosition(HardwareClass.IntakeRest);
     }
 
-    public void specClawOpen(){
-        SpecClaw.setPosition(hardwareClass.SPEC_CLAW_OPEN);
+    public void IntakeOut()
+    {
+        IntakeRotate.setPosition(HardwareClass.IntakeDown);
     }
 
-    public void specClawClose(){
+    public void IntakeIn()
+    {
+        IntakeRotate.setPosition(HardwareClass.IntakeUp);
 
     }
 
 
-    public void adjust_P(){
-        Pivot.setPosition(hardwareClass.PIVOT_MAX_LEFT);
-        wait(500);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_CLOSED);
-        Pivot.setPosition(hardwareClass.PIVOT_MAX_RIGHT);
+    //Claw intake
+
+    public void SClawIn()
+    {
+        SClaw.setPosition(HardwareClass.SClawMin);
     }
 
-    public void adjust(){
-        ClawIn.setPosition(hardwareClass.CLAW_IN_ADJUST);
-        Pivot.setPosition(hardwareClass.PIVOT_MAX_LEFT);
-        wait(500);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_CLOSED);
-        Pivot.setPosition(hardwareClass.PIVOT_MAX_RIGHT);
+    public void SClawOut()
+    {
+        SClaw.setPosition(HardwareClass.SClawMax);
     }
 
-    /** Fine state */
+    //Outtake Claw
 
-    public void intakePrep(double rot){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_PREP);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
-        Pivot.setPosition(rot);
+    public void OutClawTake()
+    {
+        ClawOut.setPosition(HardwareClass.ClawOutClosedpoz);
     }
 
-    public void intakeDown(double rot){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
-        Pivot.setPosition(rot);
+    public void OutClawOpen()
+    {
+        ClawOut.setPosition(HardwareClass.ClawOutOpenedPoz);
     }
 
-    public void intakeDown_noPivot(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN);
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
+    //Outtake rotate
+
+    public void OutTakeRest()
+    {
+        OuttakeRotate.setPosition(HardwareClass.OuttakeRestPoz);
     }
 
-    public void intakeTake(){
-        ClawIn.setPosition(hardwareClass.CLAW_IN_ADJUST);
+    public void OutTakeBasket()
+    {
+        OuttakeRotate.setPosition(HardwareClass.Outtakebasketpoz);
     }
 
-    public void intakeUp(){
-        IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_UP);
+    public void OutTakeTrans()
+    {
+        OuttakeRotate.setPosition(HardwareClass.Outtaketakepoz);
     }
 
-    public void intakeAdjust(){
-        ClawIn.setPosition(hardwareClass.CLAW_IN_CLOSED);
-        Pivot.setPosition(hardwareClass.PIVOT_MAX_RIGHT);
-    }
 
-    public void transferClose(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_CLOSED);
-    }
-
-    public void transferGive(){
-        ClawIn.setPosition(hardwareClass.CLAW_IN_OPEN);
-    }
-
-    public void outtakePut(){
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_PLACE - 0.05);
-    }
-
-    public void outtakePlace(){
-        ClawOut.setPosition(hardwareClass.CLAW_OUT_OPEN);
-    }
-
-    public void outtakeReturn(){
-        OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_VERTICAL);
-    }
 
 
 

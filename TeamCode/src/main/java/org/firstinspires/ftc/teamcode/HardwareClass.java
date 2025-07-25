@@ -9,9 +9,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 @Config
 public class HardwareClass {
+
 
     //DcMotor
 
@@ -23,12 +25,20 @@ public class HardwareClass {
     public DcMotorEx Push;
 
     public DcMotor FR, FL , BR , BL;
-    public DcMotorEx LS , RS, Extendo;
+    public DcMotorEx LS , RS;
     public double SLIDES_MAX_POWER = 1;
 
+    public static double ExtendoMaxPoz = 0.5, ExtendoMinPoz = 0, ExtendoRestPoz = 0.02, ExtendoShortPoz = 0.5;    // Pozitii extendo
     /** SLIDES PID VALUES */
+    public static double IntakeDown = 0.83, IntakeUp = 0.28, IntakeRest = 0.60;     ;
 
-    public double IN_ROBOT = 0, HIGH_BASKET = 890 ,LOW_BASKET = 350, HIGH_S_BASKET = 800;
+    public static int JumpHeight = 400;
+
+    public static double Outtaketakepoz = 0  , OuttakeRestPoz = 0.3, Outtakebasketpoz = 1;
+
+    public static double ClawOutClosedpoz = 0.6, ClawOutOpenedPoz = 0.3;
+
+    public static double IN_ROBOT = 0, HIGH_BASKET = 890 ,LOW_BASKET = 350, HIGH_S_BASKET = 800;
     public double PREP_SPECIMEN = 330;
     public double PLACE_SPECIMEN = 330;
 
@@ -36,33 +46,18 @@ public class HardwareClass {
 
     /** AUTO COORDS*/
 
-    public double X = 0 , Y = 0, HEAD = 0;
-
     /**  EXTENDO PID VALUES  */
 
-    public double IN = 200, MAX = 1200 ;
-    public double CLOSE = 300;
-    public ColorRangeSensor IntakeSensor;
-
     //Servo
-    public Servo ClawIn , ClawOut , IntakeRotate, OuttakeRotate, Pivot, MobiDick , Cam;
-    // Intake claw
-    public double CLAW_IN_CLOSED = 0.5 ,CLAW_IN_OPEN = 0.06 , CLAW_IN_ADJUST = 0.43;
-    public double SPEC_CLAW_OPEN = 0.25 ,SPEC_CLAW_CLOSE = 0.5;
+    public static double SClawMax = 0.73, SClawMin = 0.49   ;      //gheara
 
-    public double MD_OUT = 0.13 ,MD_IN = 0.43;
-    public double CAM_OUT = 0.47 ,CAM_IN = 0.13;
-    // Intake rotation
-    public double INTAKE_ROTATION_CORRECT = 0.17, INTAKE_ROTATION_DOWN = 0.58 , INTAKE_ROTATION_UP = 0 , INTAKE_ROTATION_PREP = 0.42,INTAKE_ROTATION_SEE = 0.39;
-    // Intake Pivot
-    public double PIVOT_MAX_LEFT = 0.8, PIVOT_MAX_RIGHT = 0.3 , PIVOT_RIGHT_TOP = 0.4 , PIVOT_LEFT_TOP = 0.1 , PIVOT_PERPENDICULAR = 0.54;
-    public double CLAW_OUT_CLOSED = 0.62,CLAW_OUT_OPEN = 0.40, CLAW_OUT_SPEC = 0.57;
-    // Outtake claw rotation
-    public double OUTTAKE_ROTATION_TAKE = 0.07, OUTTAKE_ROTATION_PLACE = 0.9, OUTTAKE_ROTATION_VERTICAL = 0.63 , OUTTAKE_ROTATION_SPEC = 0.95   , OUTTAKE_ROTATION_HIGH_VERT = 0.62,OUTTAKE_ROTATION_TAKE_LOW = 0.06;
-    //Specimen
-    public double SPECIMEN_CLOSED = 0.53 , SPECIMEN_OPEN = 0.3;
+    public Servo ClawOut , OuttakeRotate, MobiDick , Cam, SClaw, SExtendo, IntakeRotate;
 
-    //Singleton
+    public CRServo Brush;
+
+
+
+
     private static HardwareClass hardwareClass = null;
 
     public HardwareClass(HardwareMap hardwareMap){
@@ -71,22 +66,19 @@ public class HardwareClass {
         this.FL = hardwareMap.get(DcMotor.class , "FL");
         this.BR = hardwareMap.get(DcMotor.class , "BR");
         this.BL = hardwareMap.get(DcMotor.class , "BL");
-
-        this.Push = hardwareMap.get(DcMotorEx.class , "PUSH");
         //Slides
         this.RS = hardwareMap.get(DcMotorEx.class,"RS");
         this.LS = hardwareMap.get(DcMotorEx.class,"LS");
-        this.Extendo = hardwareMap.get(DcMotorEx.class , "EX");
         //Servos
-        this.ClawIn = hardwareMap.get(Servo.class, "CI");
+        this.Brush = hardwareMap.get(CRServo.class, "PV");
         this.ClawOut = hardwareMap.get(Servo.class, "CO");
-        this.IntakeRotate = hardwareMap.get(Servo.class, "RI");
+        this.SClaw = hardwareMap.get(Servo.class, "CI");
         this.OuttakeRotate = hardwareMap.get(Servo.class, "RO");
         this.Cam = hardwareMap.get(Servo.class, "CAM");
-        this.Pivot = hardwareMap.get(Servo.class, "PV");
         this.MobiDick = hardwareMap.get(Servo.class, "MD");
-
-        this.IntakeSensor = hardwareMap.get(ColorRangeSensor.class, "IS");
+        this.SExtendo = hardwareMap.get(Servo.class, "IP");
+        this.IntakeRotate = hardwareMap.get(Servo.class, "RI");
+        // this.IntakeSensor = hardwareMap.get(ColorRangeSensor.class, "IS");
 
     }
 

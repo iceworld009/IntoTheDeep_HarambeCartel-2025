@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.HardwareClass;
-import org.firstinspires.ftc.teamcode.Threads.Extendo;
 import org.firstinspires.ftc.teamcode.Threads.Holonomic;
 import org.firstinspires.ftc.teamcode.Threads.Servos;
 import org.firstinspires.ftc.teamcode.Threads.Slides;
@@ -50,7 +49,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
     //Holonomic chassy = null;
     Slides slides = null;
     Servos servos = null;
-    Extendo extendo = null;
+     int drop = 0;
     HardwareClass hardwareClass = null;
     Holonomic holonomic = null;
 
@@ -58,11 +57,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
 
     String Style = "Drive";
 
-    int decl = 1;
-    int pivotType = 1;
-
-    int ExtendoPosition = 0;
-
+    int Slides_Jumped = 0, Drop = 0;
     enum Mode {
         DRIVER_CONTROL,
         AUTOMATIC_CONTROL
@@ -88,13 +83,11 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         slides = Slides.getInstance(hardwareMap, telemetry);
-        servos = Servos.getInstance(hardwareMap , telemetry);
-        extendo = Extendo.getInstance(hardwareMap,telemetry);
+        servos = Servos.getInstance(hardwareMap, telemetry);
         hardwareClass = HardwareClass.getInstance(hardwareMap);
-        holonomic = Holonomic.getInstance(hardwareMap , gamepad1);
+        holonomic = Holonomic.getInstance(hardwareMap, gamepad1);
 
         //Setup Individual Motors
-        hardwareClass.Extendo.setDirection(DcMotorSimple.Direction.REVERSE);
         hardwareClass.LS.setDirection(DcMotorSimple.Direction.REVERSE);
 
         hardwareClass.FL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -102,212 +95,105 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
 
         waitForStart();
 
-        servos.camIn();
 
-        if(!slides.getStatus()){
+        if (!slides.getStatus()) {
             slides.setup();
         }
 
-        if(!extendo.getStatus()){
-            extendo.setup();
-        }
 
-        if(!holonomic.getStatus()){
+        if (!holonomic.getStatus()) {
             holonomic.start();
         }
 
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
-            switch (Style){
-                case "Drive" : {
-                    //Intake mode
-                    if(gamepad1.right_bumper){
-                        servos.intake();
-                        ExtendoPosition = (int) hardwareClass.CLOSE;
-                        holonomic.decel();
-                        servos.placeInBasket();
-                        delay(100);
-                        slides.setCoefs(0.003 ,0 ,0);
-                        slides.goToPosition(hardwareClass.IN_ROBOT);
-                        //pivotType = 1;
-                        Style = "Intake";
+
+
+            switch (Style) {
+                case "Drive": {
+
+                    if (this.gamepad1.right_bumper) {
+                            servos.ExtendoMax();
+                            servos.SClawOut();
+                            servos.IntakePreTake();
+                            Style = "Intake";
                     }
-
-                    //Place in basket and return
-                    if(gamepad1.left_bumper){
-                        servos.outtake();
-                        delay(50);
-                        slides.setCoefs(0.01,0 ,0);
-                        slides.goToPosition(hardwareClass.HIGH_BASKET);
-                    }
-
-                    //Prep for high basket
-                    if(gamepad1.left_trigger > 0.5){
-                        servos.placeInBasket();
-                        delay(100);
-                        slides.setCoefs(0.003 ,0 ,0);
-                        slides.goToPosition(hardwareClass.IN_ROBOT);
-                    }
-
-                    if(gamepad1.x){
-                        extendo.goToPosition(-100);
-                        extendo.resetMotor();
-                        hardwareClass.IN = 260;
-                    }
-
-                    if(gamepad1.dpad_right){
-                        hardwareClass.OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-                        delay(100);
-                        slides.setCoefs(0.003 ,0 ,0);
-                        servos.adjust();
-                        slides.goToPosition(hardwareClass.IN_ROBOT);
-                    }
-
-                    if(gamepad1.dpad_up){
-                        servos.outtake();
-                        delay(50);
-                        slides.setCoefs(0.01,0 ,0);
-                        slides.goToPosition(hardwareClass.LOW_BASKET);
-                    }
-
-                    if(gamepad1.dpad_left){
-                        hardwareClass.OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE);
-                        delay(100);
-                        slides.setCoefs(0.003 ,0 ,0);
-                        slides.goToPosition(hardwareClass.LOW_BASKET);
-                        delay(300);
-                        slides.setCoefs(0.003 ,0 ,0);
-                        slides.goToPosition(hardwareClass.IN_ROBOT);
-                    }
-
-                    //Give colored sample to human player
-                    if(gamepad1.y){
-                        extendo.goToPosition(hardwareClass.MAX);
-                        servos.pickUpSample();
-                    }
-
-                    if(gamepad1.b){
-                        slides.setCoefs(0.01 , 0 , 0);
-                        slides.goToPosition(hardwareClass.IN_ROBOT);
-                        extendo.goToPosition(-50);
-                        servos.see();
-                        hardwareClass.OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE_LOW);
-                        Style = "Spec";
-                    }
-
-
                     break;
                 }
-                case "Intake" : {
-                    if(gamepad1.right_trigger > 0.5 && ExtendoPosition < hardwareClass.MAX){
-                        ExtendoPosition += 30;
-                    }else if(gamepad1.right_bumper && ExtendoPosition > hardwareClass.CLOSE){
-                        ExtendoPosition -= 10;
-                    }
-                    extendo.goToPosition(ExtendoPosition);
+                case "Intake": {
+                    if (this.gamepad1.right_bumper) servos.ExtendoShort();
 
-                    if(pivotType == 1){
-                        servos.rotatePivot(hardwareClass.PIVOT_MAX_LEFT * gamepad1.left_trigger + hardwareClass.PIVOT_MAX_RIGHT);
+                    if (this.gamepad1.right_trigger > 0.15) {
+                        servos.IntakeOut();
+                        servos.BrushOn();
+                    }
+                    if (this.gamepad1.left_trigger > 0.15) {
+                        servos.IntakePreTake();
+                        servos.BrushOFF();
+                    }
+                    if (this.gamepad1.a) {
+
+                        servos.SClawIn();
+                        sleep(200);
+                        servos.BrushOFF();
+                        servos.IntakeIn();
+                        servos.ExtendoMin();
+                        Style = "Outtake";
+                        servos.OutTakeTrans();
+                        slides.nulpoz();
+
                     }
 
-                    if(gamepad1.a){
+
+                    if (this.gamepad1.x) {
+                        servos.BrushOFF();
+                        servos.IntakeIn();
+                        sleep(30);
+                        servos.ExtendoMin();
                         Style = "Drive";
-                        holonomic.accel();
-                        hardwareClass.IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN);
-                        servos.wait(100);
-                        servos.transfer();
-                        delay(100);
-                        extendo.goToPosition(hardwareClass.IN);
-                        servos.adjust();
+
                     }
 
+                    break;
+                }
 
-                    if(gamepad1.b){
+
+                case "Outtake": {
+                    if (this.gamepad1.y) {
+                        servos.ExtendoShort();
+                        sleep(150);
+                        servos.SClawOut();
+                        servos.ExtendoMin();
                         Style = "Drive";
-                        holonomic.accel();
-                        hardwareClass.IntakeRotate.setPosition(hardwareClass.INTAKE_ROTATION_DOWN);
-                        servos.wait(100);
-                        servos.transferShort();
-                        delay(100);
-                        extendo.goToPosition(hardwareClass.IN);
-                        servos.adjust();
                     }
-                    break;
+
+                    if (this.gamepad1.left_bumper) {
+                        servos.OutClawTake();
+                        servos.SClawOut();
+                        sleep(400);
+                        slides.goToPosition(HardwareClass.HIGH_BASKET);
+                        servos.OutTakeBasket();
+                        Drop = 1;
+                    }
+
+                    if (this.gamepad1.left_trigger > 0.15 && Drop == 1) {
+                        Drop = 0;
+                        servos.OutClawOpen();
+                        sleep(300);
+                        servos.OutTakeRest();
+                        sleep(500);
+                        slides.nulpoz();
+                        Style = "Drive";
+                    }
+
                 }
-                case "Spec" : {
 
-                    //Intake mode
-                    if(gamepad1.right_bumper){
-                        servos.intake();
-                        ExtendoPosition = (int) hardwareClass.CLOSE;
-                        holonomic.decel();
-                        servos.placeInBasket();
-                        delay(100);
-                        slides.setCoefs(0.003 ,0 ,0);
-                        slides.goToPosition(hardwareClass.IN_ROBOT);
-                        pivotType = 1;
-                        Style = "Intake";
-                    }
-
-                    //Take Specimen
-                    if(gamepad1.right_trigger == 1){
-                        servos.placeInBasket();
-                        slides.setCoefs(0.01 , 0 , 0);
-                        slides.goToPosition(hardwareClass.IN_ROBOT);
-                        hardwareClass.OuttakeRotate.setPosition(hardwareClass.OUTTAKE_ROTATION_TAKE_LOW);
-                    }
-
-                    //Place specimen
-                    if(gamepad1.left_bumper){
-                        slides.setCoefs(0.01 , 0 , 0);
-                        servos.outtakeSpec();
-                        delay(100);
-                        slides.goToPosition(hardwareClass.PREP_SPECIMEN);
-                    }
-
-                    if(gamepad1.x){
-                        hardwareClass.Push.setPower(-1);
-                    }else if(gamepad1.a){
-                        hardwareClass.Push.setPower(1);
-                    }else {
-                        hardwareClass.Push.setPower(0);
-                    }
-
-                    if(gamepad1.dpad_down){
-                        slides.stop();
-                        hardwareClass.RS.setPower(-1);
-                        hardwareClass.LS.setPower(-1);
-                        delay(1000);
-                        hardwareClass.Push.setPower(1);
-                        delay(1000);
-                        hardwareClass.Push.setPower(0);
-                    }
-
-                    if(gamepad1.dpad_up){
-                        slides.setCoefs(0.02 ,0 ,0);
-                        slides.goToPosition(hardwareClass.HIGH_BASKET);
-                        servos.placeInBasket();
-                    }
-
-                    if(gamepad1.dpad_right){
-                        hardwareClass.PREP_SPECIMEN += 5;
-                        slides.goToPosition(hardwareClass.PREP_SPECIMEN);
-                        delay(50);
-                    }
-
-                    if(gamepad1.dpad_left){
-                        hardwareClass.PREP_SPECIMEN -= 5;
-                        slides.goToPosition(hardwareClass.PREP_SPECIMEN);
-                        delay(50);
-                    }
-
-                    break;
-                }
-                default: break;
             }
         }
     }
+
+
 
     private void delay(int delay){
         try {

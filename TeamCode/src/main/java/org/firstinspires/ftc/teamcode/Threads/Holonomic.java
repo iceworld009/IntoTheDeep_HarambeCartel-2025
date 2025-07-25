@@ -49,10 +49,10 @@ public class Holonomic {
                         cos = Math.cos(theta - Math.PI/4);
                         max = Math.max(Math.abs(sin) , Math.abs(cos));
 
-                        FLPower = power * cos/max + turn;
-                        FRPower = power * sin/max - turn;
-                        BLPower = power * sin/max + turn;
-                        BRPower = power * cos/max - turn;
+                        FLPower = power * cos/max + turn/2;
+                        FRPower = power * sin/max - turn/2;
+                        BLPower = power * sin/max + turn/2;
+                        BRPower = power * cos/max - turn/2;
 
                         FL.setPower(FLPower + 0.1);
                         FR.setPower(FRPower + 0.1);
