@@ -61,7 +61,7 @@ public class HardwareClass {
     private static HardwareClass hardwareClass = null;
 
     public HardwareClass(HardwareMap hardwareMap){
-        //Chassy
+        //Chassy Motors
         this.FR = hardwareMap.get(DcMotor.class , "FR");
         this.FL = hardwareMap.get(DcMotor.class , "FL");
         this.BR = hardwareMap.get(DcMotor.class , "BR");
@@ -70,16 +70,16 @@ public class HardwareClass {
         this.RS = hardwareMap.get(DcMotorEx.class,"RS");
         this.LS = hardwareMap.get(DcMotorEx.class,"LS");
         //Servos
-        this.Brush = hardwareMap.get(CRServo.class, "PV");
+        this.Brush = hardwareMap.get(CRServo.class, "BRUSH");
         this.ClawOut = hardwareMap.get(Servo.class, "CO");
-        this.SClaw = hardwareMap.get(Servo.class, "CI");
+        this.SClaw = hardwareMap.get(Servo.class, "SC");
         this.OuttakeRotate = hardwareMap.get(Servo.class, "RO");
-        this.Cam = hardwareMap.get(Servo.class, "CAM");
+        //this.Cam = hardwareMap.get(Servo.class, "CAM");
         this.MobiDick = hardwareMap.get(Servo.class, "MD");
-        this.SExtendo = hardwareMap.get(Servo.class, "IP");
-        this.IntakeRotate = hardwareMap.get(Servo.class, "RI");
+        this.SExtendo = hardwareMap.get(Servo.class, "SEX");
+        this.IntakeRotate = hardwareMap.get(Servo.class, "IR");
 
-        this.Yoda = hardwareMap.get(ColorRangeSensor.class,"___TEST___");
+        this.Yoda = hardwareMap.get(ColorRangeSensor.class,"YD");
         // this.IntakeSensor = hardwareMap.get(ColorRangeSensor.class, "IS");
     }
 

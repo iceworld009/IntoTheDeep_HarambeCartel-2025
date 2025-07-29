@@ -145,7 +145,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         slides.nulpoz();
                     }
 
-                    /*
+
                     if (colorSensor.getColor() == 1){
                         servos.SClawIn();
                         sleep(200);
@@ -156,7 +156,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         servos.OutTakeTrans();
                         slides.nulpoz();
                     }
-                     */
+
 
                     if (this.gamepad1.x) {
                         servos.BrushOFF();
